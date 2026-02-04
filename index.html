@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Titu sin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fancy: ['"Poppins"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        softpink: {
+                            50: '#fff7fb',
+                            100: '#ffeef6',
+                            200: '#fce7f3',
+                            300: '#fccfe8',
+                            400: '#f9a8d4',
+                            500: '#f472b6',
+                        },
+                    },
+                    animation: {
+                        'bounce-slow': 'bounce 2s infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                        'pulse-soft': 'pulse-soft 2.5s ease-in-out infinite',
+                        'pop-in': 'pop-in 0.5s ease-out forwards',
+                        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+                        'petal-fall': 'petal-fall 6s linear infinite',
+                        'spin-slow': 'spin 5s linear infinite',
+                    },
+                    keyframes: {
+                        'pulse-soft': {
+                            '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+                            '50%': { transform: 'scale(1.05)', opacity: '0.96' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        },
+                        'pop-in': {
+                            '0%': { transform: 'scale(0.8)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                        'fade-in-up': {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        'petal-fall': {
+                            '0%': { transform: 'translateY(-10vh) translateX(0) rotate(0deg)', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '100%': { transform: 'translateY(110vh) translateX(40px) rotate(360deg)', opacity: '0' },
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    <style>
+        .bg-animated {
+            background:
+                radial-gradient(circle at 0% 0%, #ffeef6 0, transparent 50%),
+                radial-gradient(circle at 100% 0%, #fce7f3 0, transparent 55%),
+                radial-gradient(circle at 0% 100%, #ffe4e6 0, transparent 55%),
+                radial-gradient(circle at 100% 100%, #fecdd3 0, transparent 50%),
+                radial-gradient(circle at 50% 50%, #fdf2f8 0, #f9a8d4 70%);
+            background-size: 200% 200%;
+            animation: bgMove 22s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            50% {
+                background-position: 100% 100%;
+            }
+
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .envelope {
+            position: relative;
+            width: 260px;
+            height: 180px;
+            background: linear-gradient(135deg, #f9a8d4, #fecdd3);
+            border-radius: 18px;
+            box-shadow: 0 18px 36px rgba(244, 114, 182, 0.28);
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            transform-origin: top;
+            transform: rotateX(0deg);
+            transition: transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 10;
+        }
+
+        .envelope.open .envelope-flap {
+            transform: rotateX(-160deg);
+        }
+
+        .letter {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 90%;
+            background: #fff7fb;
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(244, 114, 182, 0.22);
+            padding: 18px 16px;
+            text-align: center;
+            opacity: 0;
+            transition: transform 0.8s ease-out, opacity 0.6s ease-out;
+            z-index: 5;
+        }
+
+        .envelope.open .letter {
+            transform: translate(-50%, -50%) translateY(-10px) scale(1);
+            opacity: 1;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            border-radius: 28px;
+            background: linear-gradient(145deg, #fcd5e8, #f9a8d4);
+            cursor: pointer;
+            transition: transform 0.4s ease-out;
+        }
+
+        .gift-lid {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 55px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, #f9a8d4, #fb7185);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .petal {
+            position: fixed;
+            top: -10vh;
+            width: 18px;
+            height: 28px;
+            border-radius: 60% 40% 60% 40%;
+            background: radial-gradient(circle at 30% 20%, #ffe4e6 0, #f9a8d4 40%, #fb7185 100%);
+            opacity: 0;
+            pointer-events: none;
+            animation-name: petal-fall;
+        }
+
+        #noBtn {
+            transition: transform 0.2s ease-out;
+            will-change: transform;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-animated text-rose-900 flex items-center justify-center p-4">
+
+    <div class="relative w-full max-w-xl mx-auto">
+        <main
+            class="relative bg-white/70 backdrop-blur-xl border border-rose-100 rounded-3xl shadow-[0_20px_70px_rgba(244,114,182,0.25)] p-6 md:p-12 flex flex-col items-center justify-center min-h-[580px] space-y-12 transition-all duration-500">
+
+            <section id="introSection" class="text-center space-y-3 transition-all duration-500 relative z-20 pb-4">
+                <p class="text-xs uppercase tracking-[0.3em] text-rose-300 animate-fade-in-up">Hi titu</p>
+                <h1 class="text-3xl md:text-4xl font-semibold font-fancy text-rose-500">Isss a gift box for you</h1>
+                <p class="text-sm md:text-base text-rose-300">Please click to open the box hihi.</p>
+            </section>
+
+            <div id="interactionArea" class="flex flex-col items-center justify-center space-y-12 w-full">
+
+                <button id="giftBox"
+                    class="gift-box animate-bounce-slow flex items-center justify-center relative z-10">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="w-[26px] h-full bg-rose-50/80 mx-auto"></div>
+                        <div class="h-[26px] w-full bg-rose-50/80 absolute my-auto"></div>
+                    </div>
+                    <div class="gift-lid"><span class="text-rose-50 font-semibold uppercase">Click to open</span></div>
+                    <div class="absolute -top-12 text-4xl animate-float">🎀</div>
+                </button>
+
+                <div id="envelopeWrapper" class="hidden opacity-0 scale-95 transition-all duration-700">
+                    <div id="envelope" class="envelope">
+                        <div class="envelope-flap"></div>
+                        <div class="letter">
+                            <div class="text-2xl mb-1"></div>
+                            <p class="text-rose-700 text-sm mb-2">Hii Titu, I wish I was there with you to go down on my
+                                knees, but since I am not, here it is...</p>
+                            <p class="text-rose-700 text-lg font-bold mb-3">Will you be my valentine? ❤️</p>
+                            <p class="text-[6px] text-rose-300 uppercase tracking-widest">(No is allowed but only if you
+                                can select it 😆)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="buttonsWrapper" class="hidden opacity-0 flex items-center gap-8 z-20">
+                    <button id="yesBtn"
+                        class="px-8 py-3 rounded-full bg-rose-400 text-white font-bold shadow-lg hover:bg-rose-500 transition-colors">
+                        Yes 💕
+                    </button>
+                    <button id="noBtn"
+                        class="px-8 py-3 rounded-full bg-white border-2 border-rose-200 text-rose-400 font-medium shadow-md">
+                        No 😈
+                    </button>
+                </div>
+            </div>
+
+            <section id="finalMessage" class="hidden text-center space-y-4">
+                <div class="text-6xl animate-bounce">💖</div>
+                <p class="text-2xl font-bold text-rose-700">Thank youuu!</p>
+                <p class="text-rose-500">A big hug and two movie nights are officially reserved now.</p>
+                <p class="text-lg font-semibold text-rose-400">I love you ❤️</p>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <script>
+        const giftBox = document.getElementById('giftBox');
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const envelope = document.getElementById('envelope');
+        const buttonsWrapper = document.getElementById('buttonsWrapper');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const finalMessage = document.getElementById('finalMessage');
+        const introSection = document.getElementById('introSection');
+        const interactionArea = document.getElementById('interactionArea');
+
+        giftBox.addEventListener('click', () => {
+            introSection.classList.add('hidden');
+            giftBox.classList.add('hidden');
+            envelopeWrapper.classList.remove('hidden');
+            setTimeout(() => {
+                envelopeWrapper.classList.remove('opacity-0', 'scale-95');
+                envelopeWrapper.classList.add('opacity-100', 'scale-100');
+                setTimeout(() => {
+                    envelope.classList.add('open');
+                    setTimeout(() => {
+                        buttonsWrapper.classList.remove('hidden');
+                        setTimeout(() => buttonsWrapper.classList.add('opacity-100'), 50);
+                    }, 800);
+                }, 500);
+            }, 100);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!buttonsWrapper || buttonsWrapper.classList.contains('hidden')) return;
+
+            const rect = noBtn.getBoundingClientRect();
+            const btnCenterX = rect.left + rect.width / 2;
+            const btnCenterY = rect.top + rect.height / 2;
+
+            const dx = e.clientX - btnCenterX;
+            const dy = e.clientY - btnCenterY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            const radius = 150;
+
+            if (distance < radius) {
+                const force = (radius - distance) / radius;
+                const pushDist = force * 200;
+                const moveX = -(dx / distance) * pushDist;
+                const moveY = -(dy / distance) * pushDist;
+                noBtn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            } else {
+                noBtn.style.transform = `translate(0px, 0px)`;
+            }
+        });
+
+        yesBtn.addEventListener('click', () => {
+            interactionArea.style.transition = "all 0.5s ease";
+            interactionArea.classList.add('opacity-0', 'scale-90');
+
+            setTimeout(() => {
+                interactionArea.remove();
+                finalMessage.classList.remove('hidden');
+                finalMessage.classList.add('animate-pop-in');
+                fireConfetti();
+                startPetals();
+            }, 500);
+        });
+
+        function fireConfetti() {
+            const end = Date.now() + 2000;
+            (function frame() {
+                confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#f9a8d4', '#fb7185'] });
+                confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#f9a8d4', '#fb7185'] });
+                if (Date.now() < end) requestAnimationFrame(frame);
+            }());
+        }
+
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            document.body.appendChild(petal);
+            setTimeout(() => petal.remove(), 6000);
+        }
+
+        function startPetals() {
+            for (let i = 0; i < 30; i++) setTimeout(createPetal, i * 200);
+        }
+    </script>
+</body>
+
+</html>
